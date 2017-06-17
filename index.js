@@ -6,13 +6,14 @@ var http = ht.Server(app);
 var io = require('socket.io')(http);
 var path = require('path'), fs = require('fs');
 var uuid = require('node-uuid');
+var port =  process.env.PORT || 3000;
 
 app.use('/js', express.static('public/js'));
 app.use('/css', express.static('public/css'));
 app.use('/images', express.static('public/images'));
 
-http.listen(8080, function() {
-    console.log('listening on *:8080');
+http.listen(port, function() {
+    console.log('listening on *:'+ port);
 });
 
 app.get('/', function(req, res) {
