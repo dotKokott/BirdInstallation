@@ -64,6 +64,10 @@ io.on('connection', function (socket) {
       serverSocket = socket;
   })
 
+
+
+
+
   socket.on('update_rotation', function (data) {
       var p = players[data.id];
       if(!p) {
