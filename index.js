@@ -31,6 +31,7 @@ app.get('/manifest.json', function(req, res) {
 var players = {};
 var clients = {};
 
+
 var serverSockets = [];
 
 function config(id) {
