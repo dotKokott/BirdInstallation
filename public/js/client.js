@@ -1,5 +1,6 @@
 var $ = require("jquery");
 var p5 = require("p5");
+
 window.p5 = p5;
 
 var Cock = require("./cock.js");
@@ -8,8 +9,8 @@ var cookie = new Cock();
 
 var recordRTC = require('recordrtc');
 
-var SERVER_IP = "192.168.1.242";
-var socket = io('http://' + SERVER_IP + ':1111');
+
+var socket = io();
 
 socket.on('info', function (data) {
     socket.emit('register', {id: cookie.Guid});
@@ -65,4 +66,37 @@ var canvas = new p5(function(p) {
 
 $( document ).ready(function() {
     //init();
+});
+
+var mediaStream, recordAudio;
+
+navigator.getUserMedia({audio: true, video: false}, function(stream) {
+    mediaStream = stream;
+        recordAudio = recordRTC(stream, {
+            type: 'audio',
+            recorderType: recordRTC.StereoAudioRecorder
+        });
+    }, function(error) {
+        alert(JSON.stringify(error));
+    });
+
+
+$('#start-recording').click(function() {
+    console.log(recordAudio);
+    recordAudio.startRecording();
+});
+
+$('#stop-recording').click(function() {
+    recordAudio.stopRecording(function () {
+        recordAudio.getDataURL(function(audioDataURL) {
+            var files = {
+                audio: {
+                     type: recordAudio.getBlob().type || 'audio/wav',
+                     dataURL: audioDataURL
+                 }
+            };
+            console.log(files);
+            socket.emit('recording', {id: cookie.Guid, recording: files});
+        });
+    });
 });

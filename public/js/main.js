@@ -70,7 +70,6 @@ var canvas = new p5(function(p) {
 
         p.createCanvas(WIDTH, HEIGHT);
 
-
         window.flock = new Flock();
         // Add an initial set of boids into the system
         for (var i = 0; i < 100; i++) {
@@ -93,50 +92,50 @@ var canvas = new p5(function(p) {
 
         p.background(51);
 
-        //flock.run();
+        flock.run();
 
         //FOR NOW!!!
-        var bs = opt.base_scale1;
-        var os = opt.offset_scale1;
-
-        var bs2 = opt.base_scale2;
-        var os2 = opt.offset_scale2;
-
-        var fillColor1 = p.color(opt.fillColor1);
-        var strokeColor1 = p.color(opt.strokeColor1);
-        var fillColor2 = p.color(opt.fillColor2);
-        var strokeColor2 = p.color(opt.strokeColor2);
-        var fillColor3 = p.color(opt.fillColor3);
-        var strokeColor3 = p.color(opt.strokeColor3);
-
-        for(var i = 0; i < opt.feathers; i++) {
-            var f = new Feather(100 + i * opt.f_off, 200, opt.base * bs2, opt.base, opt.offset1 * os2, opt.offset2 * os2);
-            f.setRot(p, 10);
-            f.addRot(p, -i * opt.rot_change);
-
-
-            f.draw(p, fillColor3, strokeColor3);
-
-            //break;
-        }
-
-
-
-        for(var i = 0; i < opt.feathers; i++) {
-            var f_1 = new Feather(100 + i * opt.f_off, 200, opt.base * bs, opt.base, opt.offset1 * os, opt.offset2 * os);
-            f_1.setRot(p, 10);
-            f_1.addRot(p, -i * opt.rot_change);
-
-            f_1.draw(p, fillColor2, strokeColor2);
-        }
-
-        for(var i = 0; i < opt.feathers; i++) {
-            var f = new Feather(100 + i * opt.f_off, 200, opt.base, opt.base, opt.offset1, opt.offset2);
-            f.setRot(p, 10);
-            f.addRot(p, -i * opt.rot_change);
-
-            f.draw(p, fillColor1, strokeColor1);
-        }
+        // var bs = opt.base_scale1;
+        // var os = opt.offset_scale1;
+        //
+        // var bs2 = opt.base_scale2;
+        // var os2 = opt.offset_scale2;
+        //
+        // var fillColor1 = p.color(opt.fillColor1);
+        // var strokeColor1 = p.color(opt.strokeColor1);
+        // var fillColor2 = p.color(opt.fillColor2);
+        // var strokeColor2 = p.color(opt.strokeColor2);
+        // var fillColor3 = p.color(opt.fillColor3);
+        // var strokeColor3 = p.color(opt.strokeColor3);
+        //
+        // for(var i = 0; i < opt.feathers; i++) {
+        //     var f = new Feather(100 + i * opt.f_off, 200, opt.base * bs2, opt.base, opt.offset1 * os2, opt.offset2 * os2);
+        //     f.setRot(p, 10);
+        //     f.addRot(p, -i * opt.rot_change);
+        //
+        //
+        //     f.draw(p, fillColor3, strokeColor3);
+        //
+        //     //break;
+        // }
+        //
+        //
+        //
+        // for(var i = 0; i < opt.feathers; i++) {
+        //     var f_1 = new Feather(100 + i * opt.f_off, 200, opt.base * bs, opt.base, opt.offset1 * os, opt.offset2 * os);
+        //     f_1.setRot(p, 10);
+        //     f_1.addRot(p, -i * opt.rot_change);
+        //
+        //     f_1.draw(p, fillColor2, strokeColor2);
+        // }
+        //
+        // for(var i = 0; i < opt.feathers; i++) {
+        //     var f = new Feather(100 + i * opt.f_off, 200, opt.base, opt.base, opt.offset1, opt.offset2);
+        //     f.setRot(p, 10);
+        //     f.addRot(p, -i * opt.rot_change);
+        //
+        //     f.draw(p, fillColor1, strokeColor1);
+        // }
     }
 });
 

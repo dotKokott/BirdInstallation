@@ -1,7 +1,11 @@
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
+var ht = require('http');
+
+var http = ht.Server(app);
 var io = require('socket.io')(http);
+var path = require('path'), fs = require('fs');
+var uuid = require('node-uuid');
 
 app.use('/js', express.static('public/js'));
 app.use('/css', express.static('public/css'));
@@ -63,7 +67,7 @@ io.on('connection', function (socket) {
   socket.on('update_rotation', function (data) {
       var p = players[data.id];
       if(!p) {
-          console.log("Error, player not found: ", data.id);
+          //console.log("Error, player not found: ", data.id);
           return;
       }
 
@@ -72,7 +76,27 @@ io.on('connection', function (socket) {
       if(serverSocket) {
           serverSocket.emit('update_player', {config: p});
       }
-  })
+  });
+
+  socket.on('recording', function(data) {
+      var filename = uuid.v4();
+
+      var p = path.join('recordings', filename + ".wav");
+      players[data.id].sound = p;
+
+      var file = fs.createWriteStream(p);
+
+      console.log("Writing recording: ", filename);
+      var buffer = new Buffer(data.recording.audio.dataURL.split(",")[1], 'base64');
+      fs.writeFile(p, buffer, function(err) {
+          if(err) {
+              return console.log(err);
+          }
+
+          console.log("The file was saved!");
+          socket.emit('recording_saved', {id: data.id});
+      });
+  });
 
   socket.on('disconnect', function() {
       var client = clients[socket.id];
