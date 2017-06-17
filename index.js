@@ -11,8 +11,8 @@ app.use('/js', express.static('public/js'));
 app.use('/css', express.static('public/css'));
 app.use('/images', express.static('public/images'));
 
-http.listen(1111, function() {
-    console.log('listening on *:1111');
+http.listen(80, function() {
+    console.log('listening on *:80');
 });
 
 app.get('/', function(req, res) {
