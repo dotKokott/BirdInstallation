@@ -6,13 +6,14 @@ var http = ht.Server(app);
 var io = require('socket.io')(http);
 var path = require('path'), fs = require('fs');
 var uuid = require('node-uuid');
+var port =  process.env.PORT || 3000;
 
 app.use('/js', express.static('public/js'));
 app.use('/css', express.static('public/css'));
 app.use('/images', express.static('public/images'));
 
-http.listen(1111, function() {
-    console.log('listening on *:1111');
+http.listen(port, function() {
+    console.log('listening on *:'+ port);
 });
 
 app.get('/', function(req, res) {
@@ -30,7 +31,7 @@ app.get('/manifest.json', function(req, res) {
 var players = {};
 var clients = {};
 
-var serverSocket;
+var serverSockets = [];
 
 function config(id) {
     this.id = id;
@@ -61,7 +62,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('server_register', function(data) {
-      serverSocket = socket;
+      serverSockets.push(socket);
   })
 
   socket.on('update_rotation', function (data) {
@@ -73,8 +74,10 @@ io.on('connection', function (socket) {
 
       p.rotation = data.rotation;
       p.color = data.color;
-      if(serverSocket) {
-          serverSocket.emit('update_player', {config: p});
+      if(serverSockets.length > 0) {
+          for(var i = 0; i < serverSockets.length; i++) {
+              serverSockets[i].emit('update_player', {config: p});
+          }
       }
   });
 
@@ -102,11 +105,20 @@ io.on('connection', function (socket) {
       var client = clients[socket.id];
       if(client) {
           players[client].online = false;
-          if(serverSocket) {
-                serverSocket.emit('update_player', {config: players[client] });
+
+          if(serverSockets.length > 0) {
+              for(var i = 0; i < serverSockets.length; i++) {
+                  serverSockets[i].emit('update_player', {config: players[client]});
+              }
           }
 
           console.log("Disconnected: ", client);
+          clients[socket.id] = undefined;
+      } else {
+          var i = serverSockets.indexOf(socket);
+          serverSockets.splice(i, 1);
+
+          console.log("Disconnected server");
       }
   })
 });

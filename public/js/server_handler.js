@@ -2,7 +2,7 @@ module.exports = ServerHandler;
 
 function ServerHandler(p) {
     this.p = p;
-    this.socket = io('http://localhost:1111');
+    this.socket = io();
 
     this.socket.emit('server_register', {});
 
