@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify public/js/main.js -o public/js/bundle.js && browserify public/js/client.js -o public/js/client_bundle.js",
-    "watch": "start watchify public/js/main.js -o public/js/bundle.js --debug -v && start watchify public/js/client.js -o public/js/client_bundle.js --debug -v"
+    "watch": "start watchify public/js/main.js -o public/js/bundle.js --debug -v && start watchify public/js/client.js -o public/js/client_bundle.js --debug -v",
+     "start": "node index.js"
   },
   "repository": {
     "type": "git",
