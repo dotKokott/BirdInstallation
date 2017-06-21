@@ -125,7 +125,7 @@ Boid.prototype.render = function() {
 
       p.colorMode(p.HSB);
       var col = window.players[this.playerID].color;
-      p.strokeWeight(p.random(1,3));
+      p.strokeWeight(2);
       p.stroke(p.color(p.hue(col) + p.random(-10, 10), 255, 255));
       p.fill(col);
       //r *= 1.5;
