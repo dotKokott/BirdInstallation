@@ -28,8 +28,8 @@ function Boid(p5, x,y, playerID) {
 
   this.controlled = false;
 
-  this.ghostFill = p.color(255, 255, 255, 20);
-  this.ghostStroke = p.color(255, 255, 255, 10);
+  this.ghostFill = p.color(255, 255, 255, 5);
+  this.ghostStroke = p.color(255, 255, 255, 1);
 }
 
 Boid.prototype.isControl = function() {

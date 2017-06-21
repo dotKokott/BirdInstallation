@@ -81,7 +81,7 @@ var canvas = new p5(function(p) {
 
 
     p.addNewPlayerBoid = function(id) {
-        var b = new Boid(p, WIDTH / 2, HEIGHT / 2, id);        
+        var b = new Boid(p, WIDTH / 2, HEIGHT / 2, id);
         window.players[id].boid = b;
         window.flock.addBoid(b);
     }
