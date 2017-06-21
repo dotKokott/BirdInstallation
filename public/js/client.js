@@ -34,13 +34,13 @@ var canvas = new p5(function(p) {
     var backColor;
     p.setup = function() {
         p.frameRate(24);
-        var cv = p.createCanvas(window.innerWidth, window.innerHeight);
+        var cv = p.createCanvas(720 / 4, 1280 / 4);
 
         backColor = p.color(0, 0, 0, 255);
-        // cv.style.height  = cv.height + 'px';
-        // cv.style.width  = cv.width + 'px';
+        cv.canvas.style.width = "100%";
+        cv.canvas.style.height = "100%";
         p.colorMode(p.HSB);
-        col = p.color(p.random(255), 255, 255);
+        col = p.random(255);
     }
 
 
@@ -56,10 +56,10 @@ var canvas = new p5(function(p) {
             if(p.keyIsDown(p.LEFT_ARROW)) rotation -= 5;
             if(p.keyIsDown(p.RIGHT_ARROW)) rotation += 5;
         }
-
-        p.fill(col);
-        p.strokeWeight(p.random(1,10));
-        p.stroke(p.color(p.hue(col) + p.random(-10, 10), 255, 255));
+        var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 20, 255, 255);
+        p.fill(waveCol);
+        //p.strokeWeight(p.random(1,10));
+        p.stroke(p.color(col, 255, 255));
 
         p.push();
         p.translate(p.width / 2,p.height/2);
@@ -72,7 +72,7 @@ var canvas = new p5(function(p) {
         p.endShape(p.CLOSE);
         p.pop();
 
-        socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: [p.hue(col), p.saturation(col), p.brightness(col)]});
+        socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: col});
 
     }
 });

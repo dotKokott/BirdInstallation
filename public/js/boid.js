@@ -22,8 +22,10 @@ function Boid(p5, x,y, playerID) {
 
   this.position = p.createVector(x,y);
   this.r = 6.0;
+
   this.maxspeed = 3;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
+
   this.controlled = false;
 
   this.ghostFill = p.color(255, 255, 255, 20);
@@ -126,8 +128,9 @@ Boid.prototype.render = function() {
       p.colorMode(p.HSB);
       var col = window.players[this.playerID].color;
       p.strokeWeight(2);
-      p.stroke(p.color(p.hue(col) + p.random(-10, 10), 255, 255));
-      p.fill(col);
+      var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 20, 255, 255);
+      p.fill(waveCol);
+      p.stroke(waveCol);
       //r *= 1.5;
 
       p.colorMode(p.RGB);
