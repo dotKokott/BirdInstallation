@@ -11,6 +11,7 @@ var socket = io();
 socket.on('info', function (data) {
     socket.emit('register', {id: cookie.Guid});
 });
+//window.addEventListener( 'touchmove', function(e) {e.preventDefault();)
 
 var isMobile = false; //initiate as false
 // device detection
