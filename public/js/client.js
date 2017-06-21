@@ -12,6 +12,11 @@ socket.on('info', function (data) {
     socket.emit('register', {id: cookie.Guid});
 });
 
+var isMobile = false; //initiate as false
+// device detection
+if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
+    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) isMobile = true;
+
 // socket.on('success', function (data) {
 //     if(data.existing) {
 //         $('#info').text("Welcome back");
@@ -24,9 +29,14 @@ var canvas = new p5(function(p) {
     var INTERVAL_60 = 0.0166666; //60 fps
 
     var col;
+
+    var rotation = 0;
+    var backColor;
     p.setup = function() {
-        p.frameRate(30);
+        p.frameRate(24);
         var cv = p.createCanvas(window.innerWidth, window.innerHeight);
+
+        backColor = p.color(0, 0, 0, 255);
         // cv.style.height  = cv.height + 'px';
         // cv.style.width  = cv.width + 'px';
         p.colorMode(p.HSB);
@@ -35,21 +45,25 @@ var canvas = new p5(function(p) {
 
 
     p.draw = function() {
-        p.background(p.color(0, 0, 0, 50));
-        // p.rotateY(p.radians(p.rotationY));
-        // p.box(200, 200, 200);
-        //$('#info').text(p.rotationY);
+        p.background(backColor);
 
-        var currentY = p.rotationY;
-        currentY = p.constrain(currentY, -70, 70);
+        if(isMobile) {
+            var currentY = p.rotationY;
+            currentY = p.constrain(currentY, -70, 70);
+
+            rotation = currentY;
+        } else {
+            if(p.keyIsDown(p.LEFT_ARROW)) rotation -= 5;
+            if(p.keyIsDown(p.RIGHT_ARROW)) rotation += 5;
+        }
 
         p.fill(col);
         p.strokeWeight(p.random(1,10));
-        p.stroke(p.color(p.hue(col) + p.random(-60, 60), 255, 255));
+        p.stroke(p.color(p.hue(col) + p.random(-10, 10), 255, 255));
 
         p.push();
         p.translate(p.width / 2,p.height/2);
-        p.rotate(p.radians(currentY));
+        p.rotate(p.radians(rotation));
         p.beginShape();
         var r = 50;
         p.vertex(0, -r * 2);
@@ -58,7 +72,7 @@ var canvas = new p5(function(p) {
         p.endShape(p.CLOSE);
         p.pop();
 
-        socket.emit('update_rotation', {id: cookie.Guid, rotation: currentY, color: [p.hue(col), p.saturation(col), p.brightness(col)]});
+        socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: [p.hue(col), p.saturation(col), p.brightness(col)]});
 
     }
 });
@@ -67,7 +81,7 @@ $( document ).ready(function() {
     //init();
 });
 
-var mediaStream, recordAudio;
+// var mediaStream, recordAudio;
 
 // navigator.getUserMedia({audio: true, video: false}, function(stream) {
 //     mediaStream = stream;

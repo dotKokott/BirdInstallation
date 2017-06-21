@@ -25,6 +25,9 @@ function Boid(p5, x,y, playerID) {
   this.maxspeed = 3;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
   this.controlled = false;
+
+  this.ghostFill = p.color(255, 255, 255, 20);
+  this.ghostStroke = p.color(255, 255, 255, 10);
 }
 
 Boid.prototype.isControl = function() {
@@ -108,20 +111,22 @@ Boid.prototype.seek = function(target) {
   return steer;
 }
 
+
+
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
   var r = this.r;
   var theta = this.velocity.heading() + p.radians(90);
   if(!this.controlled) {
         p.strokeWeight(2);
-        p.stroke(p.color(255, 255, 255, 10));
-        p.fill(p.color(255, 255, 255, 20));
+        p.stroke(this.ghostStroke);
+        p.fill(this.ghostFill);
   } else {
 
       p.colorMode(p.HSB);
       var col = window.players[this.playerID].color;
       p.strokeWeight(p.random(1,3));
-      p.stroke(p.color(p.hue(col) + p.random(-30, 30), 255, 255));
+      p.stroke(p.color(p.hue(col) + p.random(-10, 10), 255, 255));
       p.fill(col);
       //r *= 1.5;
 

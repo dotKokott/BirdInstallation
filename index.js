@@ -33,6 +33,7 @@ var clients = {};
 
 
 var serverSockets = [];
+var serverSocket;
 
 function config(id) {
     this.id = id;
@@ -63,7 +64,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('server_register', function(data) {
-      serverSockets.push(socket);
+      serverSocket = socket;
   })
 
 
@@ -79,34 +80,25 @@ io.on('connection', function (socket) {
 
       p.rotation = data.rotation;
       p.color = data.color;
-      if(serverSockets.length > 0) {
-          for(var i = 0; i < serverSockets.length; i++) {
-              serverSockets[i].emit('update_player', {config: p});
-          }
-      }
+
+      if(serverSocket) serverSocket.emit('update_player', {config: p});
+    //   if(serverSockets.length > 0) {
+    //       for(var i = 0; i < serverSockets.length; i++) {
+    //           serverSockets[i].emit('update_player', {config: p});
+    //       }
+    //   }
   });
 
   socket.on('recording', function(data) {
       var filename = uuid.v4();
 
       var p = path.join('recordings', filename + ".wav");
-      //players[data.id].sound = p;
 
-      for(var i = 0; i < serverSockets.length; i++) {
-          serverSockets[i].emit('associate_sound', { id: data.id, sound: data.recording.audio.dataURL.split(",")[1]});
-      }
 
-    //   var file = fs.createWriteStream(p);
-    //   console.log("Writing recording: ", filename);
-    //   var buffer = new Buffer(data.recording.audio.dataURL.split(",")[1], 'base64');
-    //   fs.writeFile(p, buffer, function(err) {
-    //       if(err) {
-    //           return console.log(err);
-    //       }
-      //
-    //       console.log("The file was saved!");
-    //       socket.emit('recording_saved', {id: data.id});
-    //   });
+    //   for(var i = 0; i < serverSockets.length; i++) {
+    //       serverSockets[i].emit('associate_sound', { id: data.id, sound: data.recording.audio.dataURL.split(",")[1]});
+    //   }
+    if(serverSocket) serverSocket.emit('associate_sound', { id: data.id, sound: data.recording.audio.dataURL.split(",")[1]});
   });
 
   socket.on('disconnect', function() {
@@ -114,11 +106,13 @@ io.on('connection', function (socket) {
       if(client) {
           players[client].online = false;
 
-          if(serverSockets.length > 0) {
-              for(var i = 0; i < serverSockets.length; i++) {
-                  serverSockets[i].emit('update_player', {config: players[client]});
-              }
-          }
+        //   if(serverSockets.length > 0) {
+        //       for(var i = 0; i < serverSockets.length; i++) {
+        //           serverSockets[i].emit('update_player', {config: players[client]});
+        //       }
+        //   }
+
+            if(serverSocket) serverSocket.emit('update_player', {config: players[client]});
 
           console.log("Disconnected: ", client);
           clients[socket.id] = undefined;
