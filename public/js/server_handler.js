@@ -23,4 +23,11 @@ function ServerHandler(p) {
             window.players[data.config.id] = data.config;
         }
     })
+
+    this.socket.on('associate_sound', function(data) {
+        if(window.players[data.id]) {
+            window.players[data.config.id].sound = data.sound;
+            console.log("Thanks for the sound");
+        }
+    })
 }

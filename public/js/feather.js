@@ -24,11 +24,11 @@ Feather.prototype.draw = function(p, fillColor, strokeColor) {
     // this.offset1 = window.options.offset1;
     // this.offset2 = window.options.offset2;
 
-    p.fill(fillColor);
+    p.fill(fillColor, 10);
     //p.noFill();
     p.stroke(strokeColor);
     p.push();
-        p.translate(this.pos[0], this.pos[1]);
+        p.translate(this.pos[0] + 150, this.pos[1] + 100);
         p.rotate(this.rot);
         p.beginShape();
             p.curveVertex(84 ,  91 + this.yOff);

@@ -24,6 +24,7 @@ function Boid(p5, x,y, playerID) {
   this.r = 6.0;
   this.maxspeed = 3;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
+  this.controlled = false;
 }
 
 Boid.prototype.isControl = function() {
@@ -31,7 +32,7 @@ Boid.prototype.isControl = function() {
 }
 
 Boid.prototype.run = function(boids) {
-    if(!this.isControl()) {
+    if(!this.controlled) {
         this.flock(boids);
     } else {
         this.control();
@@ -53,11 +54,11 @@ Boid.prototype.control = function() {
     rotation = p.radians(rotation);
     rotation += this.velocity.heading();
     var rotVec = p.createVector(Math.cos(rotation), Math.sin(rotation));
-    rotVec.mult(20);
+    rotVec.mult(30);
     var conTarget = p5.Vector.add(this.position, rotVec);
 
-    p.fill(p.color(255, 0, 0));
-    p.ellipse(conTarget.x, conTarget.y, 5, 5);
+    // p.fill(p.color(255, 0, 0));
+    // p.ellipse(conTarget.x, conTarget.y, 5, 5);
 
     var seekForce = this.seek(conTarget);
     this.applyForce(seekForce);
@@ -80,10 +81,13 @@ Boid.prototype.flock = function(boids) {
 
 // Method to update location
 Boid.prototype.update = function() {
+    this.controlled = this.isControl();
   // Update velocity
   this.velocity.add(this.acceleration);
   // Limit speed
-  this.velocity.limit(this.maxspeed);
+  var max = this.maxspeed;
+  if(this.controlled) max *=2;
+  this.velocity.limit(max);
   this.position.add(this.velocity);
   // Reset accelertion to 0 each cycle
   this.acceleration.mult(0);
@@ -98,21 +102,33 @@ Boid.prototype.seek = function(target) {
   desired.mult(this.maxspeed);
   // Steering = Desired minus Velocity
   var steer = p5.Vector.sub(desired,this.velocity);
-  steer.limit(this.maxforce);  // Limit to maximum steering force
+  var maxForce = this.maxforce;
+  if(this.controlled) maxForce *= 2;
+  steer.limit(maxForce);  // Limit to maximum steering force
   return steer;
 }
 
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
+  var r = this.r;
   var theta = this.velocity.heading() + p.radians(90);
-  if(!this.isControl()) {
-        p.fill(127);
+  if(!this.controlled) {
+        p.strokeWeight(2);
+        p.stroke(p.color(255, 255, 255, 10));
+        p.fill(p.color(255, 255, 255, 20));
   } else {
 
-      p.fill(window.players[this.playerID].color);
+      p.colorMode(p.HSB);
+      var col = window.players[this.playerID].color;
+      p.strokeWeight(p.random(1,3));
+      p.stroke(p.color(p.hue(col) + p.random(-30, 30), 255, 255));
+      p.fill(col);
+      //r *= 1.5;
+
+      p.colorMode(p.RGB);
   }
 
-  p.stroke(200);
+
   p.push();
   p.translate(this.position.x,this.position.y);
   p.rotate(theta);
@@ -141,12 +157,21 @@ Boid.prototype.separate = function(boids) {
   // For every boid in the system, check if it's too close
   for (var i = 0; i < boids.length; i++) {
     var d = window.p5.Vector.dist(this.position,boids[i].position);
+    var isControl = boids[i].isControl();
+    if(isControl) desiredseparation *= 3;
     // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
     if ((d > 0) && (d < desiredseparation)) {
       // Calculate vector pointing away from neighbor
       var diff = p5.Vector.sub(this.position,boids[i].position);
       diff.normalize();
-      diff.div(d);        // Weight by distance
+      var b = boids[i];
+
+      diff.div(d);
+
+      if(isControl) {
+          diff.mult(50);
+      }
+
       steer.add(diff);
       count++;            // Keep track of how many
     }
