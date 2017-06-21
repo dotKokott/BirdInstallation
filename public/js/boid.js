@@ -56,10 +56,10 @@ Boid.prototype.applyForce = function(force) {
 Boid.prototype.control = function() {
     var rotation = window.players[this.playerID].rotation;
 
-    rotation = p.radians(rotation);
-    rotation += this.velocity.heading();
+    rotation = rotation - p.radians(90);
+    //rotation += this.velocity.heading();
     var rotVec = p.createVector(Math.cos(rotation), Math.sin(rotation));
-    rotVec.mult(30);
+    //rotVec.mult(30);
     var conTarget = p5.Vector.add(this.position, rotVec);
 
     // p.fill(p.color(255, 0, 0));
@@ -128,7 +128,7 @@ Boid.prototype.render = function() {
       p.colorMode(p.HSB);
       var col = window.players[this.playerID].color;
       p.strokeWeight(2);
-      var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 20, 255, 255);
+      var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 5, 255, 255);
       p.fill(waveCol);
       p.stroke(waveCol);
       //r *= 1.5;

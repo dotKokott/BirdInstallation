@@ -32,9 +32,13 @@ var canvas = new p5(function(p) {
 
     var rotation = 0;
     var backColor;
+
+    var WIDTH = window.innerWidth / 4;
+    var HEIGHT = window.innerHeight / 4;
+
     p.setup = function() {
         p.frameRate(24);
-        var cv = p.createCanvas(720 / 4, 1280 / 4);
+        var cv = p.createCanvas(WIDTH, HEIGHT);
 
         backColor = p.color(0, 0, 0, 255);
         cv.canvas.style.width = "100%";
@@ -43,29 +47,24 @@ var canvas = new p5(function(p) {
         col = p.random(255);
     }
 
-
     p.draw = function() {
         p.background(backColor);
 
-        if(isMobile) {
-            var currentY = p.rotationY;
-            currentY = p.constrain(currentY, -70, 70);
 
-            rotation = currentY;
-        } else {
-            if(p.keyIsDown(p.LEFT_ARROW)) rotation -= 5;
-            if(p.keyIsDown(p.RIGHT_ARROW)) rotation += 5;
-        }
-        var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 20, 255, 255);
+        var v = p.createVector(p.mouseX - WIDTH / 2, p.mouseY - HEIGHT / 2);
+
+        rotation = v.heading() + p.radians(90);
+
+        var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 5, 255, 255);
         p.fill(waveCol);
         //p.strokeWeight(p.random(1,10));
         p.stroke(p.color(col, 255, 255));
 
         p.push();
         p.translate(p.width / 2,p.height/2);
-        p.rotate(p.radians(rotation));
+        p.rotate(rotation);
         p.beginShape();
-        var r = 50;
+        var r = 5;
         p.vertex(0, -r * 2);
         p.vertex(-r, r * 2);
         p.vertex(r, r * 2);
@@ -73,7 +72,6 @@ var canvas = new p5(function(p) {
         p.pop();
 
         socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: col});
-
     }
 });
 
