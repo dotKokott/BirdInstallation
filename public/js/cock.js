@@ -3,14 +3,15 @@ module.exports = Cock;
 var Guid = require("guid");
 
 function Cock() {
-    var exist = this.readCookie("guid");
+    var exist = window.localStorage.getItem("guid");
     if(exist) {
-        console.log("Cookie found: ", exist);
+        console.log("GUID found: ", exist);
         this.Guid = exist;
     } else {
         var value = Guid.raw();
-        console.log("No cookie found, creating: " + value);
-        this.createCookie("guid", value, 7);
+        console.log("No GUID found, creating: " + value);
+        window.localStorage.setItem("guid", value);
+        this.Guid = value;
     }
 }
 
