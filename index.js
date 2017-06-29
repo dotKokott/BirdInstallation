@@ -51,16 +51,16 @@ io.on('connection', function (socket) {
   socket.on('register', function (data) {
       clients[socket.id] = data.id;
 
-      if(players[data.id]) {
-          players[data.id].online = true;
-          io.emit('success', {existing: true, config: players[data.id]});
-      } else {
-          players[data.id] = new config(data.id);
-          players[data.id].online = true;
-          socket.emit('success', {existing: false, config: players[data.id]});
+      if(serverSocket) {
+          if(players[data.id]) {
+              players[data.id].online = true;
+              serverSocket.emit('success', {existing: true, config: players[data.id]});
+          } else {
+              players[data.id] = new config(data.id);
+              players[data.id].online = true;
+              serverSocket.emit('success', {existing: false, config: players[data.id]});
+          }
       }
-
-
   });
 
   socket.on('server_register', function(data) {

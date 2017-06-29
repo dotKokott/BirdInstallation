@@ -9,7 +9,9 @@ var cookie = new Cock();
 var socket = io();
 
 //socket.on('info', function (data) {
-    socket.emit('register', {id: cookie.Guid});
+console.log("Emitting: ", cookie.Guid);
+socket.emit('register', {id: cookie.Guid});
+console.log("Finish emmit");
 //});
 //window.addEventListener( 'touchmove', function(e) {e.preventDefault();)
 
