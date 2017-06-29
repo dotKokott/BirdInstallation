@@ -8,9 +8,9 @@ var cookie = new Cock();
 
 var socket = io();
 
-socket.on('info', function (data) {
+//socket.on('info', function (data) {
     socket.emit('register', {id: cookie.Guid});
-});
+//});
 //window.addEventListener( 'touchmove', function(e) {e.preventDefault();)
 
 var isMobile = false; //initiate as false
@@ -53,8 +53,13 @@ var canvas = new p5(function(p) {
 
 
         var v = p.createVector(p.mouseX - WIDTH / 2, p.mouseY - HEIGHT / 2);
+        var newRot = v.heading() + p.radians(90);
+        if(newRot != rotation) {
+            rotation = newRot;
 
-        rotation = v.heading() + p.radians(90);
+            socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: col});
+            console.log("Send change");
+        }
 
         var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 5, 255, 255);
         p.fill(waveCol);
@@ -65,14 +70,12 @@ var canvas = new p5(function(p) {
         p.translate(p.width / 2,p.height/2);
         p.rotate(rotation);
         p.beginShape();
-        var r = 5;
-        p.vertex(0, -r * 2);
-        p.vertex(-r, r * 2);
-        p.vertex(r, r * 2);
+        var r = 3;
+        p.vertex(0, -r * 4);
+        p.vertex(-r, r);
+        p.vertex(r, r);
         p.endShape(p.CLOSE);
         p.pop();
-
-        socket.emit('update_rotation', {id: cookie.Guid, rotation: rotation, color: col});
     }
 });
 

@@ -28,8 +28,8 @@ function Boid(p5, x,y, playerID) {
 
   this.controlled = false;
 
-  this.ghostFill = p.color(255, 255, 255, 5);
-  this.ghostStroke = p.color(255, 255, 255, 1);
+  this.ghostFill = p.color(255, 255, 255, 20);
+  this.ghostStroke = p.color(255, 255, 255, 10);
 }
 
 Boid.prototype.isControl = function() {
@@ -108,7 +108,7 @@ Boid.prototype.seek = function(target) {
   // Steering = Desired minus Velocity
   var steer = p5.Vector.sub(desired,this.velocity);
   var maxForce = this.maxforce;
-  if(this.controlled) maxForce *= 2;
+  if(this.controlled) maxForce *= 4;
   steer.limit(maxForce);  // Limit to maximum steering force
   return steer;
 }
@@ -141,9 +141,9 @@ Boid.prototype.render = function() {
   p.translate(this.position.x,this.position.y);
   p.rotate(theta);
   p.beginShape();
-  p.vertex(0, -this.r*2);
-  p.vertex(-this.r, this.r*2);
-  p.vertex(this.r, this.r*2);
+  p.vertex(0, -this.r*4);
+  p.vertex(-this.r, this.r);
+  p.vertex(this.r, this.r);
   p.endShape(p.CLOSE);
   p.pop();
 }
@@ -165,7 +165,7 @@ Boid.prototype.separate = function(boids) {
   // For every boid in the system, check if it's too close
   for (var i = 0; i < boids.length; i++) {
     var d = window.p5.Vector.dist(this.position,boids[i].position);
-    var isControl = boids[i].isControl();
+    var isControl = boids[i].controlled;
     if(isControl) desiredseparation *= 3;
     // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
     if ((d > 0) && (d < desiredseparation)) {
