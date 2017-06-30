@@ -8,7 +8,7 @@ module.exports = Boid;
 // Boid class
 // Methods for Separation, Cohesion, Alignment added
 var p;
-
+var id = 0;
 function Boid(p5, x,y, playerID) {
     this.playerID = playerID;
     p = p5;
@@ -21,15 +21,18 @@ function Boid(p5, x,y, playerID) {
   }
 
   this.position = p.createVector(x,y);
-  this.r = 6.0;
+  this.r = 4.0;
 
   this.maxspeed = 3;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
 
   this.controlled = false;
 
-  this.ghostFill = p.color(255, 255, 255, 20);
-  this.ghostStroke = p.color(255, 255, 255, 10);
+  this.ghostFill = p.color(255, 255, 255, 255);
+  this.ghostStroke = p.color(255, 255, 255, 255);
+
+  this.s_i = Math.floor(p.random(0, 512));
+  id++;
 }
 
 Boid.prototype.isControl = function() {
@@ -113,27 +116,31 @@ Boid.prototype.seek = function(target) {
   return steer;
 }
 
-
-
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
   var r = this.r;
-  var theta = this.velocity.heading() + p.radians(90);
-  if(!this.controlled) {
-        p.strokeWeight(2);
-        p.stroke(this.ghostStroke);
-        p.fill(this.ghostFill);
-  } else {
 
-      p.colorMode(p.HSB);
+  var alpha = opt.flash_boids ? opt.boid_flash_base_alpha + window.level : 1;
+  var theta = this.velocity.heading() + p.radians(90);
+  var hue = window.h + 180;
+  if(hue > 360) hue -= 360;
+
+  p.strokeWeight(2);
+  p.stroke(hue, 100, 95 - opt.light, alpha);
+  if(!this.controlled) {
+        p.fill(360, 100, 100, alpha);
+  } else {
       var col = window.players[this.playerID].color;
       p.strokeWeight(2);
-      var waveCol = p.color(col + Math.cos(Date.now() * 0.01) * 5, 255, 255);
-      p.fill(waveCol);
-      p.stroke(waveCol);
-      //r *= 1.5;
 
-      p.colorMode(p.RGB);
+      p.fill(col, 100, 50, 1);
+
+      r *= 1.5;
+  }
+  
+  var rScale = 1;
+  if(opt.flap_boid_wings) {
+        rScale = p.map(window.spec[this.s_i] / 2, 0, 255, 1, opt.flap_boid_wings_max);
   }
 
 
@@ -141,9 +148,9 @@ Boid.prototype.render = function() {
   p.translate(this.position.x,this.position.y);
   p.rotate(theta);
   p.beginShape();
-  p.vertex(0, -this.r*4);
-  p.vertex(-this.r, this.r);
-  p.vertex(this.r, this.r);
+  p.vertex(0, -r*4);
+  p.vertex(-r * rScale, r);
+  p.vertex(r * rScale, r);
   p.endShape(p.CLOSE);
   p.pop();
 }

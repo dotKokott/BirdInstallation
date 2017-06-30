@@ -30,4 +30,8 @@ function ServerHandler(p) {
             console.log("Thanks for the sound");
         }
     })
+
+    this.socket.on('update_vj', function(data) {
+        opt = data;
+    })
 }

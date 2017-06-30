@@ -24,6 +24,10 @@ app.get('/client.html', function(req, res) {
     res.sendFile(__dirname + '/public/client.html');
 });
 
+app.get('/vj.html', function(req, res) {
+    res.sendFile(__dirname + '/public/vj.html');
+});
+
 app.get('/manifest.json', function(req, res) {
     res.sendFile(__dirname + '/public/manifest.json');
 });
@@ -34,6 +38,8 @@ var clients = {};
 
 var serverSockets = [];
 var serverSocket;
+
+var controlSocket;
 
 function config(id) {
     this.id = id;
@@ -63,11 +69,19 @@ io.on('connection', function (socket) {
       }
   });
 
+  socket.on('control', function(data) {
+      console.log('VJ Controller logged in');
+
+      controlSocket = socket;
+  })
+
   socket.on('server_register', function(data) {
       serverSocket = socket;
   })
 
-
+  socket.on('update_vj', function(data) {
+      serverSocket.emit('update_sound_opts', { opts: data });
+  })
 
 
 
