@@ -1,11 +1,6 @@
 module.exports = sound_opts;
 
 var dat = require("dat-gui");
-var p5 = require("p5");
-
-function randomBetween(min, max) {
-    return Math.floor(Math.random() * max) + min;
-}
 
 function sound_opts() {
     this.p_tresh = 0.12;
@@ -23,7 +18,7 @@ function sound_opts() {
     this.flash_random_color = false;
     this.flash_black_white = false;
     this.draw_fft = false;
-    this.draw_circles = false;
+    this.draw_circles = true;
     this.flash_boids = true;
     this.boid_base_alpha = 0.5;
     this.flap_boid_wings = true;
@@ -73,25 +68,12 @@ function sound_opts() {
     this.autoplay_switch_min = 3;
     this.autoplay_switch_max = 15;
 
-    this.doAutoplay = function() {
-        this.doRandom();
-    }
-
     this.apply = undefined;
-}
-
-sound_opts.prototype.doRandom = function() {
-    console.log("Thing");
-    if(opt.autoplay) {
-        var time = randomBetween(opt.autoplay_switch_min, opt.autoplay_switch_max) * 1000;
-        console.log("Setting time to ", time);
-        setTimeout(this.doRandom, time);
-    }
 }
 
 sound_opts.prototype.GUI = function() {
     var gui = new dat.GUI();
-    this.gui = gui;
+
     gui.useLocalStorage = true;
     gui.remember(this);
     window.gui = gui;
@@ -136,11 +118,10 @@ sound_opts.prototype.GUI = function() {
     gui.add(this, 'autoplay_switch_min', 0, 30).step(0.1).listen().onChange(this.change);
     gui.add(this, 'autoplay_switch_max', 0, 60).step(0.1).listen().onChange(this.change);
 
-    gui.add(this, 'doAutoplay');
-
     if(this.apply) {
         var con = gui.addFolder("Control");
         con.add(this, 'live_edit');
         con.add(this, 'apply');
     }
+
 }
