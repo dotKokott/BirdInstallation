@@ -80,10 +80,8 @@ io.on('connection', function (socket) {
   })
 
   socket.on('update_vj', function(data) {
-      serverSocket.emit('update_sound_opts', { opts: data });
+      serverSocket.emit('update_sound_opts', { opts: data.opts });
   })
-
-
 
   socket.on('update_rotation', function (data) {
       var p = players[data.id];

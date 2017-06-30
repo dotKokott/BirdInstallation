@@ -31,7 +31,14 @@ function ServerHandler(p) {
         }
     })
 
-    this.socket.on('update_vj', function(data) {
-        opt = data;
+    this.socket.on('update_sound_opts', function(data) {
+        if(!data.opts.lightChanged) {
+            var oldLight = opt.light;
+            opt = data.opts;
+            opt.light = oldLight;
+        } else {
+            opt = data.opts;
+        }
+
     })
 }

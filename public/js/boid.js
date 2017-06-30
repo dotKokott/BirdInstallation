@@ -120,7 +120,11 @@ Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
   var r = this.r;
 
-  var alpha = opt.flash_boids ? opt.boid_flash_base_alpha + window.level : 1;
+  var alpha = 1;
+  if(opt.flash_boids) {
+    alpha = window.boid_alpha;
+  }
+
   var theta = this.velocity.heading() + p.radians(90);
   var hue = window.h + 180;
   if(hue > 360) hue -= 360;
@@ -135,9 +139,9 @@ Boid.prototype.render = function() {
 
       p.fill(col, 100, 50, 1);
 
-      r *= 1.5;
+      r *= 2;
   }
-  
+
   var rScale = 1;
   if(opt.flap_boid_wings) {
         rScale = p.map(window.spec[this.s_i] / 2, 0, 255, 1, opt.flap_boid_wings_max);
@@ -238,11 +242,17 @@ Boid.prototype.cohesion = function(boids) {
   var neighbordist = 50;
   var sum = p.createVector(0,0);   // Start with empty vector to accumulate all locations
   var count = 0;
+
   for (var i = 0; i < boids.length; i++) {
     var d = p5.Vector.dist(this.position,boids[i].position);
     if ((d > 0) && (d < neighbordist)) {
       sum.add(boids[i].position); // Add location
       count++;
+
+      if(count < opt.draw_neighbour_max - p.map(window.spec[opt.neighbour_channel], 0, 255, 0, opt.draw_neighbour_max)) {
+          p.strokeWeight(1);
+          p.line(this.position.x, this.position.y, boids[i].position.x, boids[i].position.y);
+      }
     }
   }
   if (count > 0) {

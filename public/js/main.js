@@ -2,7 +2,7 @@ var $ = require("jquery");
 var p5 = require("p5");
 var sound = require("p5/lib/addons/p5.sound");
 window.p5 = p5;
-var recordRTC = require('recordrtc');
+// var recordRTC = require('recordrtc');
 var dat = require("dat-gui");
 var vec2 = require('gl-vec2');
 
@@ -75,7 +75,7 @@ var canvas = new p5(function(p) {
         mic.start();
 
         peak = new p5.PeakDetect();
-        p.colorMode(p.HSL);7
+        p.colorMode(p.HSL);
 
         // {
         //     // var gui = new dat.GUI();
@@ -100,23 +100,7 @@ var canvas = new p5(function(p) {
         //
         // }
 
-        var gui = new dat.GUI();
-        gui.remember(opt);
-        gui.add(opt, 'p_tresh', 0, 1);
-        gui.add(opt, 'p_decay', 0, 1);
-        gui.add(opt, 'p_frames', 0, 100).step(1);
-        gui.add(opt, 'v_min', 0, 1.0);
-        gui.add(opt, 'v_max', 0, 1.0);
-        gui.add(opt, 'fft_stroke_scale', 0, 20);
-        gui.add(opt, 'flash_random_beat');
-        gui.add(opt, 'flash_bw');
-        gui.add(opt, 'draw_fft');
-        gui.add(opt, 'draw_circles');
-        gui.add(opt, 'flash_boids');
-        gui.add(opt, 'boid_flash_base_alpha', 0, 1);
-        gui.add(opt, 'flap_boid_wings');
-        gui.add(opt, 'flap_boid_wings_max', 0, 10);
-        gui.add(opt, 'light', 0, 100).step(1).listen();
+        // opt.GUI();
 
         var c = p.createCanvas(WIDTH, HEIGHT);
         c.canvas.style.width = "100%";
@@ -136,7 +120,6 @@ var canvas = new p5(function(p) {
         window.flock.addBoid(b);
     }
 
-    var core_ = 0;
     var flipFlop = -1;
     p.draw = function() {
         then = now;
@@ -148,8 +131,7 @@ var canvas = new p5(function(p) {
 
         window.level = vol = mic.getLevel();
 
-        // vol = p.map(vol, 0, 1, opt.v_min, opt.v_max);
-        // p.background(180, 360, 360, opt.v_min);
+        // vol = p.map(vol, 0, 1, opt.back_alpha, opt.v_max);
 
 
         var spectrum = fft.analyze();
@@ -162,18 +144,28 @@ var canvas = new p5(function(p) {
         window.wave_len = waveform.length;
         window.is_peak = peak.isDetected;
 
+
+        var back_a = opt.back_alpha;
+
         if(window.is_peak) {
             flipFlop *= -1;
-            if(opt.flash_random_beat) {
+            if(opt.flash_random_color) {
                 window.h = p.random(0, 360);
             }
 
-            if(opt.flash_bw) {
+            if(opt.flash_black_white) {
                 opt.light = opt.light > 0 ? 0 : 100;
             }
         }
 
-        p.background(window.h, 100, opt.light, opt.v_min);
+        if(opt.flash_back_alpha_on_beat) {
+            back_a = flipFlop < 0 ? opt.alpha_on_beat_min : opt.alpha_on_beat_max;
+        }
+
+        if(opt.flash_back_alpha) {
+            back_a *= vol;
+        }
+        p.background(window.h, 100, opt.light, back_a);
 
         var circleBase = window.h + 180;
         if(circleBase > 360) circleBase -= 360;
@@ -211,7 +203,10 @@ var canvas = new p5(function(p) {
             p.endShape();
         }
 
-
+        window.boid_alpha = opt.boid_base_alpha;
+        if(opt.flash_boids) {
+            window.boid_alpha = p.map(window.level * window.level, 0, 1, opt.boid_base_alpha, 1);
+        }
         flock.run();
 
         // //FOR NOW!!!
