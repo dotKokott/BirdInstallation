@@ -146,7 +146,9 @@ var canvas = new p5(function(p) {
 
 
         var back_a = opt.back_alpha;
-
+        if(!opt.flash_random_color) {
+            window.h = opt.color;
+        }
         if(window.is_peak) {
             flipFlop *= -1;
             if(opt.flash_random_color) {

@@ -73,6 +73,10 @@ io.on('connection', function (socket) {
       console.log('VJ Controller logged in');
 
       controlSocket = socket;
+      if(serverSocket) {
+          console.log("Server socket exists already, sending opts");
+          //TODO
+      }
   })
 
   socket.on('server_register', function(data) {

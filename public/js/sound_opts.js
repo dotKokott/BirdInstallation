@@ -25,6 +25,8 @@ function sound_opts() {
     this.flap_boid_wings_max = 4;
     this.light = 0;
     this.lightChanged = false;
+
+    this.color = 0;
     this.draw_neighbour_max = 5;
     this.neighbour_channel = 3;
 
@@ -35,20 +37,23 @@ function sound_opts() {
             opt.light = 50;
             opt.lightChanged = true;
             opt.flash_black_white = false;
-            console.log("Setting light to 50")
         }
 
         opt.change(value);
+
+        opt.lightChanged = false;
     }
 
     this.changeBW = function(value) {
         if(value) {
             opt.flash_random_color = false;
             opt.light = 0;
-            opt.lightChanged
+            opt.lightChanged = true;
         }
 
         opt.change(value);
+
+        opt.lightChanged = false;
     }
 
     this.changeLight = function(value) {
@@ -56,6 +61,13 @@ function sound_opts() {
         opt.change(value);
         opt.lightChanged = false;
     }
+
+    this.avoid_player_force = 30;
+
+    this.autoplay = true;
+    this.autoplay_switch_min = 3;
+    this.autoplay_switch_max = 15;
+
     this.apply = undefined;
 }
 
@@ -89,6 +101,7 @@ sound_opts.prototype.GUI = function() {
     co.add(this, 'flash_random_color').listen().onChange(this.changeRC);
     co.add(this, 'flash_black_white').listen().onChange(this.changeBW);
     co.add(this, 'light', 0, 100).step(1).listen().onChange(this.changeLight);
+    co.add(this, 'color', 0, 360).step(1).listen().onChange(this.change);
 
     var bo = gui.addFolder("Boids");
     bo.add(this, 'flash_boids').listen().onChange(this.change);
@@ -98,6 +111,12 @@ sound_opts.prototype.GUI = function() {
     bo.add(this, 'draw_neighbour_max', 0, 10).listen().step(1).onChange(this.change);
     bo.add(this, 'neighbour_channel', 0, 512).listen().step(1).onChange(this.change);
 
+    var be = gui.addFolder("Behaviour");
+    be.add(this, 'avoid_player_force', 0, 30).listen().step(0.1).onChange(this.change);
+
+    gui.add(this, 'autoplay').listen().onChange(this.change);
+    gui.add(this, 'autoplay_switch_min', 0, 30).step(0.1).listen().onChange(this.change);
+    gui.add(this, 'autoplay_switch_max', 0, 60).step(0.1).listen().onChange(this.change);
 
     if(this.apply) {
         var con = gui.addFolder("Control");

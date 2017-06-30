@@ -188,7 +188,7 @@ Boid.prototype.separate = function(boids) {
       diff.div(d);
 
       if(isControl) {
-          diff.mult(50);
+          diff.mult(opt.avoid_player_force);
       }
 
       steer.add(diff);
