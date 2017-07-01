@@ -100,7 +100,7 @@ var canvas = new p5(function(p) {
         //
         // }
 
-        // opt.GUI();
+        opt.GUI();
 
         var c = p.createCanvas(WIDTH, HEIGHT);
         c.canvas.style.width = "100%";

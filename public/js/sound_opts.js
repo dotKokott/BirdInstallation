@@ -114,9 +114,9 @@ sound_opts.prototype.GUI = function() {
     var be = gui.addFolder("Behaviour");
     be.add(this, 'avoid_player_force', 0, 30).listen().step(0.1).onChange(this.change);
 
-    gui.add(this, 'autoplay').listen().onChange(this.change);
-    gui.add(this, 'autoplay_switch_min', 0, 30).step(0.1).listen().onChange(this.change);
-    gui.add(this, 'autoplay_switch_max', 0, 60).step(0.1).listen().onChange(this.change);
+    // gui.add(this, 'autoplay').listen().onChange(this.change);
+    // gui.add(this, 'autoplay_switch_min', 0, 30).step(0.1).listen().onChange(this.change);
+    // gui.add(this, 'autoplay_switch_max', 0, 60).step(0.1).listen().onChange(this.change);
 
     if(this.apply) {
         var con = gui.addFolder("Control");
