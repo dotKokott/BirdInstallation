@@ -1,7 +1,7 @@
 {
   "name": "bird-installation",
   "version": "1.0.0",
-  "description": "Repo for acud bird installation!",
+  "description": "Repo for a maze bird installation!",
   "main": "index.js",
   "scripts": {
     "build": "browserify public/js/main.js -o public/js/bundle.js && browserify public/js/client.js -o public/js/client_bundle.js",
