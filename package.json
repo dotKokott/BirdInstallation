@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify public/js/main.js -o public/js/bundle.js && browserify public/js/client.js -o public/js/client_bundle.js",
-    "watch": "start watchify public/js/main.js -o public/js/bundle.js --debug -v && start watchify public/js/client.js -o public/js/client_bundle.js --debug -v && start watchify public/js/vj.js -o public/js/vj_bundle.js --debug -v",
-     "start": "node index.js"
+    "watch": "start watchify public/js/main.js -o public/js/bundle.js --debug -v",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,16 +19,20 @@
   },
   "homepage": "https://github.com/dotKokott/BirdInstallation#readme",
   "dependencies": {
+    "browserify": "^16.2.0",
     "dat-gui": "^0.5.0",
     "dat.gui": "^0.6.1",
     "express": "^4.15.3",
     "gl-vec2": "^1.0.0",
     "guid": "0.0.12",
+    "jquery": "^3.3.1",
     "node-uuid": "^1.4.8",
+    "p5": "^0.6.0",
     "record-audio": "^1.0.0",
     "recordrtc": "^5.4.2",
     "recordrtc-socketio": "^1.0.6",
     "socket.io": "^2.0.3",
-    "tween": "^0.9.0"
+    "tween": "^0.9.0",
+    "watchify": "^3.11.0"
   }
 }
